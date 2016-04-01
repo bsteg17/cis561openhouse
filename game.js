@@ -1,7 +1,7 @@
 var util = require("util"),
     io = require("socket.io");
     Player = require("./Player").Player;
-    
+
 var socket,
 players;
 
@@ -30,22 +30,18 @@ function onNewPlayer(data) {
     var newPlayer = new Player(data.x, data.y);
     newPlayer.id = this.id;
     this.broadcast.emit("new player", {id: newPlayer.id, x: newPlayer.getX(), y: newPlayer.getY()});
-    
+
     var i, existingPlayer;
     for (i = 0; i < players.length; i++) {
         existingPlayer = players[i];
         this.emit("new player", {id: existingPlayer.id, x: existingPlayer.getX(), y: existingPlayer.getY()});
     };
-    
+
     players.push(newPlayer);
 };
 
 function onMovePlayer(data) {
 
 };
-
-
-
-
 
 init();

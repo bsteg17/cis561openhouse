@@ -1,7 +1,7 @@
 var http = require('http');
 var express = require('express');
 var api = require('instagram-node').instagram();
-var secrets = require('secrets.js');
+var secrets = require('./secrets.js');
 var app = express();
 
 CLIENT_ID = 'c0e99f553a0a4a86b026b6923d4e35ef';
@@ -25,6 +25,7 @@ exports.handleauth = function(req, res) {
     if (err) {
       console.log(err.body);
     } else {
+        console.log(user);
       // Game.enter(user);
     }
   });
