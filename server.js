@@ -3,11 +3,16 @@ var express = require('express');
 var api = require('instagram-node').instagram();
 var secrets = require('./secrets.js');
 var app = express();
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
+var path = require('path');
 
 CLIENT_ID = 'c0e99f553a0a4a86b026b6923d4e35ef';
 CLIENT_SECRET = secrets.client_secret;
 PORT = 8000;
 DOMAIN = 'http://localhost:'+PORT+'/';
+
+app.use(express.static('public'));
  
 api.use({
   client_id: CLIENT_ID,
@@ -25,8 +30,7 @@ exports.handleauth = function(req, res) {
     if (err) {
       console.log(err.body);
     } else {
-        console.log(user);
-      // Game.enter(user);
+      res.sendFile(path.join(__dirname + '/views/index.html'));
     }
   });
 };
@@ -36,6 +40,6 @@ app.get('/', exports.authorize_user);
 // This is your redirect URI 
 app.get('/game', exports.handleauth);
  
-http.createServer(app).listen(PORT, function(){
+server.listen(PORT, function(){
   console.log("Express server listening on port " + PORT);
 });

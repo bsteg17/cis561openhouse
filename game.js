@@ -5,43 +5,27 @@ var util = require("util"),
 var socket,
 players;
 
-function init() {
+function Game() {
     players = [];
     socket = io.listen(8000);
     setEventHandlers();
 };
 
-function setEventHandlers() {
+Game.prototype.setEventHandlers = function() {
     socket.sockets.on("connection", onSocketConnection);
 };
 
-function onSocketConnection(client) {
+Game.prototype.onSocketConnection = function(client) {
     util.log("New player has connected: "+client.id);
     client.on("disconnect", onClientDisconnect);
     client.on("new player", onNewPlayer);
     client.on("move player", onMovePlayer);
 };
 
-function onClientDisconnect() {
+Game.prototype.onClientDisconnect = function() {
     util.log("Player has disconnected: "+this.id);
 };
 
-function onNewPlayer(data) {
-    var newPlayer = new Player(data.x, data.y);
-    newPlayer.id = this.id;
-    this.broadcast.emit("new player", {id: newPlayer.id, x: newPlayer.getX(), y: newPlayer.getY()});
-
-    var i, existingPlayer;
-    for (i = 0; i < players.length; i++) {
-        existingPlayer = players[i];
-        this.emit("new player", {id: existingPlayer.id, x: existingPlayer.getX(), y: existingPlayer.getY()});
-    };
-
-    players.push(newPlayer);
+Game.prototype.onNewPlayer = function(user) {
+    
 };
-
-function onMovePlayer(data) {
-
-};
-
-init();
