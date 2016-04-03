@@ -1,45 +1,46 @@
-var http = require('http');
-var express = require('express');
-var api = require('instagram-node').instagram();
-var secrets = require('./secrets.js');
-var app = express();
-var server = http.createServer(app);
-var io = require('socket.io').listen(server);
-var path = require('path');
+http = require('http');
+Twitter = require('twitter');
+Game = require('./game.js');
+secrets = require('./secrets.js');
+express = require('express');
+path = require('path');
+bodyParser = require('body-parser');
 
-CLIENT_ID = 'c0e99f553a0a4a86b026b6923d4e35ef';
-CLIENT_SECRET = secrets.client_secret;
-PORT = 8000;
-DOMAIN = 'http://localhost:'+PORT+'/';
+app = new express();
+server = http.createServer(app);
 
-app.use(express.static('public'));
- 
-api.use({
-  client_id: CLIENT_ID,
-  client_secret: CLIENT_SECRET
+app.use("/public", express.static(path.join(__dirname, 'public')));
+app.use(bodyParser());
+
+var PORT = 8080;
+
+var client = new Twitter({
+  consumer_key: secrets.consumer_key,
+  consumer_secret: secrets.consumer_secret,
+  access_token_key: secrets.access_token_key,
+  access_token_secret: secrets.access_token_secret
+});
+
+app.get('/', function(req, res) {
+    console.log("here at /");
+      res.sendFile(path.join(__dirname + '/views/sign_in.html'));
+});
+
+app.post('/game', function(req, res) {
+    handle = req.body.handle;
+});
+
+server.listen(PORT, function() {
+    console.log("listening");
 });
  
-var redirect_uri = 'http://localhost:8000/game';
- 
-exports.authorize_user = function(req, res) {
-  res.redirect(api.get_authorization_url(redirect_uri));
-};
- 
-exports.handleauth = function(req, res) {
-  api.authorize_user(req.query.code, redirect_uri, function(err, user) {
-    if (err) {
-      console.log(err.body);
-    } else {
-      res.sendFile(path.join(__dirname + '/views/index.html'));
-    }
-  });
-};
- 
-// This is where you would initially send users to authorize 
-app.get('/', exports.authorize_user);
-// This is your redirect URI 
-app.get('/game', exports.handleauth);
- 
-server.listen(PORT, function(){
-  console.log("Express server listening on port " + PORT);
-});
+// var params = {screen_name: 'sav_jac'};
+// client.get('statuses/user_timeline', params, function(error, tweets, response){
+//   if (!error) {
+//     tweets.forEach(function(tweet) {
+//         console.log(tweet.text);
+//     });
+//   } else {
+//     console.log(error);
+//   }
+// });

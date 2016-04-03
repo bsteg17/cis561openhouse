@@ -1,31 +1,63 @@
-var util = require("util"),
-    io = require("socket.io");
-    Player = require("./Player").Player;
 
-var socket,
-players;
+var request = require('request');
 
-function Game() {
+function Game(io) {
+    var io = io;
     players = [];
-    socket = io.listen(8000);
-    setEventHandlers();
+    profiles = [];
+}
+
+Game.prototype.addPlayer = function(user) {
+    players.push(user);
+    instagramAPICall('/users/therock', user.access_token, function(following) {
+        console.log(following);
+    });
 };
 
-Game.prototype.setEventHandlers = function() {
-    socket.sockets.on("connection", onSocketConnection);
-};
 
-Game.prototype.onSocketConnection = function(client) {
-    util.log("New player has connected: "+client.id);
-    client.on("disconnect", onClientDisconnect);
-    client.on("new player", onNewPlayer);
-    client.on("move player", onMovePlayer);
-};
 
-Game.prototype.onClientDisconnect = function() {
-    util.log("Player has disconnected: "+this.id);
-};
+Game.prototype.requestChoice = function() {
+    io.emit()
+}
 
-Game.prototype.onNewPlayer = function(user) {
+Game.prototype.init = function() {
     
-};
+}
+
+function getProfileSet() {
+    
+}
+
+function intersect_safe(a, b)
+{
+  var ai = 0, bi = 0;
+  var result = [];
+
+  while( ai < a.length && bi < b.length )
+  {
+     if      (a[ai] < b[bi] ){ ai++; }
+     else if (a[ai] > b[bi] ){ bi++; }
+     else /* they're equal */
+     {
+       result.push(a[ai]);
+       ai++;
+       bi++;
+     }
+  }
+
+  return result;
+}
+
+function instagramAPICall(path, accessToken, callback) {
+    if (path[0] == "/") { path = path.substring(1); }
+    url = 'https://api.instagram.com/v1/'+path+'?access_token='+accessToken
+    request(url, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            callback(JSON.parse(body));
+        } else {
+            console.log("STATUS CODE: "+response.statusCode+" ERROR: "+error);
+        }
+    });
+}
+
+module.exports = exports = Game;

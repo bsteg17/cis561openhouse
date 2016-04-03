@@ -1,1 +1,1 @@
-console.log("hi this is javascript");
+socket = io.connect("http://localhost", {port: 8000, transports: ["websocket"]});
