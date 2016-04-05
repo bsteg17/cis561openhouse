@@ -57,8 +57,7 @@ function setEventHandlers() {
 function onConnection(client) {
     console.log("new connection: "+client.id); //debug
     players[players.length - 1].session = client;
-    console.log(players);//debug
-    askForChoice(profiles);
+    askForChoice(client);
 }
 
 function onDisconnection(client) {
@@ -74,9 +73,16 @@ function chooseProfiles(p1, p2) {
     if (overlap.length < 24) {return [];}
     chosenProfiles = [];
     for (i = 0; i < 24; i++) {
-        chosenProfiles.push(overlap[Math.floor(Math.random() * overlap.length)]);
-        overlap.splice(i, 1);
+        console.log(overlap.length); //debug
+        randomProfileIndex = Math.floor(Math.random() * overlap.length)
+        chosenProfiles.push(overlap[randomProfileIndex]);
+        overlap.splice(randomProfileIndex, 1);
     }
+    console.log("---------------------------");//debug
+    for(i = 0; i < 24; i++) {
+        console.log(chosenProfiles[i].screen_name); //debug
+    }
+    console.log("---------------------------");//debug
     return chosenProfiles;
 }
 
