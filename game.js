@@ -64,8 +64,9 @@ function onDisconnection(client) {
     console.log("disconnection: "+client.id); //debug
 }
 
-function onChoice(choice) {
-    console.log(choice);
+function onChoice(index) {
+    console.log(index); //debug
+    choice = profiles[index];
 }
 
 function chooseProfiles(p1, p2) {
@@ -73,16 +74,10 @@ function chooseProfiles(p1, p2) {
     if (overlap.length < 24) {return [];}
     chosenProfiles = [];
     for (i = 0; i < 24; i++) {
-        console.log(overlap.length); //debug
-        randomProfileIndex = Math.floor(Math.random() * overlap.length)
+        randomProfileIndex = Math.floor(Math.random() * overlap.length);
         chosenProfiles.push(overlap[randomProfileIndex]);
         overlap.splice(randomProfileIndex, 1);
     }
-    console.log("---------------------------");//debug
-    for(i = 0; i < 24; i++) {
-        console.log(chosenProfiles[i].screen_name); //debug
-    }
-    console.log("---------------------------");//debug
     return chosenProfiles;
 }
 
