@@ -1,34 +1,79 @@
 
 var request = require('request');
+var Player = require('./player.js');
+Twitter = require('twitter');
+secrets = require('./secrets.js');
+var fs = require('fs');
 
-function Game(io) {
-    var io = io;
+var twitter = new Twitter({
+  consumer_key: secrets.consumer_key,
+  consumer_secret: secrets.consumer_secret,
+  access_token_key: secrets.access_token_key,
+  access_token_secret: secrets.access_token_secret
+});
+
+function Game() {
     players = [];
     profiles = [];
 }
-
-Game.prototype.addPlayer = function(user) {
-    players.push(user);
-    instagramAPICall('/users/therock', user.access_token, function(following) {
-        console.log(following);
-    });
-};
-
-
 
 Game.prototype.requestChoice = function() {
     io.emit()
 }
 
-Game.prototype.init = function() {
+Game.prototype.addPlayer = function(handle) {
+    cursor = -1;
+    following = [];
+    ifNotFollowingTooMany(handle, function() {
+        getFollowing(handle, cursor, following, function(error, following) {
+            if (error) {console.log(error);}
+            //console.log(following); //debug
+            player = new Player(handle, following);
+            players.push(player);
+        });
+    });
+}
+
+Game.prototype.start = function() {
+    console.log('entered startGame');
     
 }
 
-function getProfileSet() {
-    
+function getFollowing(handle, cursor, following, callback) {
+    var params = {screen_name: handle, cursor: cursor, count: 200};
+    twitter.get('friends/list', params, function(error, followingBatch, response){
+      if (!error) {
+        followingBatch.users.forEach(function(user) {
+            following.push(user);
+        });
+        cursor = followingBatch.next_cursor;
+        if (cursor == 0) {
+          callback(null, following);
+        } else {
+          getFollowing(handle, cursor, following, callback)
+        }
+      } else {
+        callback(error, following);
+      }
+    });
 }
 
-function intersect_safe(a, b)
+function ifNotFollowingTooMany(handle, callback) {
+    params = {screen_name:handle};
+    twitter.get('users/show', params, function(error, user, response){
+      if (!error) {
+          if (user.friends_count < 1000) {
+              callback();
+          } else {
+              console.log("sorry you're following too many people. you are too popular/desparate to play this game.");
+          }
+      } else {
+          console.log(error);
+      }
+    });
+}
+
+function intersectSafe(a, b)
 {
   var ai = 0, bi = 0;
   var result = [];
@@ -46,18 +91,6 @@ function intersect_safe(a, b)
   }
 
   return result;
-}
-
-function instagramAPICall(path, accessToken, callback) {
-    if (path[0] == "/") { path = path.substring(1); }
-    url = 'https://api.instagram.com/v1/'+path+'?access_token='+accessToken
-    request(url, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            callback(JSON.parse(body));
-        } else {
-            console.log("STATUS CODE: "+response.statusCode+" ERROR: "+error);
-        }
-    });
 }
 
 module.exports = exports = Game;
