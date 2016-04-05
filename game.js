@@ -12,13 +12,10 @@ var twitter = new Twitter({
   access_token_secret: secrets.access_token_secret
 });
 
-function Game() {
+function Game(io) {
     players = [];
     profiles = [];
-}
-
-Game.prototype.requestChoice = function() {
-    io.emit()
+    io = io;
 }
 
 Game.prototype.addPlayer = function(handle) {
@@ -36,7 +33,55 @@ Game.prototype.addPlayer = function(handle) {
 
 Game.prototype.start = function() {
     console.log('entered startGame');
+    following = JSON.parse(fs.readFileSync('players.json'));
+    player1 = new Player("stegtodiffer", following);
+    player2 = new Player("antistegtodiffer", following);
+    players.push(player1);
+    players.push(player2);
+    profiles = chooseProfiles(player1, player2);
+    if (profiles.length != 0) {
+        setEventHandlers();
+    } else {
+        console.log("you aren't following enough of the same people.");
+        return;
+    }
     
+}
+
+function setEventHandlers() {
+    io.on('connection', onConnection);
+    io.on('disconnection', onDisconnection);
+    io.on('choice', onChoice);
+}
+
+function onConnection(client) {
+    console.log("new connection: "+client.id); //debug
+    players[players.length - 1].session = client;
+    console.log(players);//debug
+    askForChoice(profiles);
+}
+
+function onDisconnection(client) {
+    console.log("disconnection: "+client.id); //debug
+}
+
+function onChoice(choice) {
+    console.log(choice);
+}
+
+function chooseProfiles(p1, p2) {
+    overlap = intersectSafe(p1.following, p2.following);
+    if (overlap.length < 24) {return [];}
+    chosenProfiles = [];
+    for (i = 0; i < 24; i++) {
+        chosenProfiles.push(overlap[Math.floor(Math.random() * overlap.length)]);
+        overlap.splice(i, 1);
+    }
+    return chosenProfiles;
+}
+
+function askForChoice(client) {
+    client.emit('askForChoice', profiles);
 }
 
 function getFollowing(handle, cursor, following, callback) {
