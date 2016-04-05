@@ -36,6 +36,6 @@ function showChooseView() {
 
 function onSelectChoice(index) {
     console.log(index); //debug
-    socket.emit('choice', {index: index});
+    socket.emit('choice', index);
 }
 

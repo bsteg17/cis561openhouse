@@ -40,7 +40,7 @@ Game.prototype.start = function() {
     players.push(player2);
     profiles = chooseProfiles(player1, player2);
     if (profiles.length != 0) {
-        setEventHandlers();
+        io.on('connection', onConnection);
     } else {
         console.log("you aren't following enough of the same people.");
         return;
@@ -48,15 +48,15 @@ Game.prototype.start = function() {
     
 }
 
-function setEventHandlers() {
-    io.on('connection', onConnection);
-    io.on('disconnection', onDisconnection);
-    io.on('choice', onChoice);
+function setEventHandlers(client) {
+    client.on('disconnection', onDisconnection);
+    client.on('choice', onChoice);
 }
 
 function onConnection(client) {
     console.log("new connection: "+client.id); //debug
     players[players.length - 1].session = client;
+    setEventHandlers(client);
     askForChoice(client);
 }
 
