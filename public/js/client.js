@@ -1,5 +1,6 @@
 var socket;
 var profiles;
+var player;
 
 $(document).ready(function() {
     
@@ -7,17 +8,36 @@ $(document).ready(function() {
     
     socket = io();
     socket.on('connect', function() {
-        socket.on('askForChoice', onAskForChoice);
+        console.log("connected");
+        showView('#handle-input-view');
+        $("#submit-handle").on('click', function() {
+            onSubmitHandle( $('#handle').val() );
+        });
+        socket.on('onAskForChoice', onAskForChoice);
     });
 });
 
-function onAskForChoice(profs) {
-    profiles = profs;
-    console.log(profiles); //debug
-    showChooseView();
+function onSubmitHandle(handle) {
+    console.log("submitted handle"); //debug
+    socket.emit('submitHandle', {playerID:socket.id, handle:handle});
+    showView('#waiting-view');
 }
 
-function showChooseView() {
+function showView(id) {
+    viewsToHide = $('.view');
+    viewToDisplay = $(id);
+    viewsToHide.hide();
+    viewToDisplay.css('display', 'block');
+}
+
+function onAskForChoice(profs) {
+    console.log('onAskForChoice', profs);
+    // profiles = profs;
+    // console.log(profiles); //debug
+    // showChooseView();
+}
+
+function onShowChooseView() {
     var choices = [];
 
    $.each(profiles, function(i, item) {
@@ -36,6 +56,6 @@ function showChooseView() {
 
 function onSelectChoice(index) {
     console.log(index); //debug
-    socket.emit('choice', index);
+    socket.emit('choice', {index: index, playerId: playerId});
 }
 

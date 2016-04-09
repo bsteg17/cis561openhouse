@@ -13,19 +13,35 @@ app.use(bodyParser());
 
 var PORT = 8080;
 
-var game = new Game(io);
+var players = {};
+// var game = new Game();
+io.on('connection', onConnection);
 
-app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname + '/views/sign_in.html'));
-});
+function onConnection(client) {
+    setEventHandlers(client);
+    players[client.id] = {};
+    console.log(client.id); //debug
+    players[client.id]["session"] = client;
+}
 
-app.post('/game', function(req, res) {
-    // handle = req.body.handle;
+function setEventHandlers(client) {
+    client.on('submitHandle', onSubmitHandle);
+}
+
+function onSubmitHandle(handle) {
+    players["/#"+handle.playerID]["handle"] = handle.handle;
+    console.log(players); //debug
+    if (Object.keys(players).length == 2) {
+        console.log("two players"); //debug
+        client.emit('askForChoice', profiles);
+    }
+}
+
+app.get('/game', function(req, res) {
     // game.addPlayer(handle);
     // if (game.players.length == 2) {
     //     game.start();
     // }
-    game.start();
     res.sendFile(path.join(__dirname + '/views/game.html'));
 });
 

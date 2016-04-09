@@ -4,6 +4,7 @@ var Player = require('./player.js');
 Twitter = require('twitter');
 secrets = require('./secrets.js');
 var fs = require('fs');
+var ERROR = require('./error.js');
 
 var twitter = new Twitter({
   consumer_key: secrets.consumer_key,
@@ -13,9 +14,10 @@ var twitter = new Twitter({
 });
 
 function Game(io) {
-    players = [];
-    profiles = [];
-    io = io;
+    this.players = {};
+    this.profiles = [];
+    this.io = io;
+    this.io.on('connection', this.onConnection);
 }
 
 Game.prototype.addPlayer = function(handle) {
@@ -31,47 +33,47 @@ Game.prototype.addPlayer = function(handle) {
     });
 }
 
-Game.prototype.start = function() {
+Game.prototype.start = function(client) {
     console.log('entered startGame');
     following = JSON.parse(fs.readFileSync('players.json'));
     player1 = new Player("stegtodiffer", following);
     player2 = new Player("antistegtodiffer", following);
-    players.push(player1);
-    players.push(player2);
     profiles = chooseProfiles(player1, player2);
-    if (profiles.length != 0) {
-        io.on('connection', onConnection);
+    if (profiles.length == 24) {
+        askForChoice(client);
     } else {
-        console.log("you aren't following enough of the same people.");
+        ERROR.notEnoughMutuallyFollowing(profiles);
         return;
     }
-    
 }
 
 function setEventHandlers(client) {
-    client.on('disconnection', onDisconnection);
-    client.on('choice', onChoice);
+    client.on('disconnection', Game.onDisconnection);
+    client.on('choice', Game.onChoice);
 }
 
-function onConnection(client) {
+Game.prototype.onConnection = function(client) {
     console.log("new connection: "+client.id); //debug
-    players[players.length - 1].session = client;
+    this.players[client.id] = {};
+    this.players[client.id]["session"] = client;
     setEventHandlers(client);
-    askForChoice(client);
+    if (Object.keys(players).length == 2) {
+        this.start();
+    }
 }
 
-function onDisconnection(client) {
+Game.prototype.onDisconnection = function(client) {
     console.log("disconnection: "+client.id); //debug
 }
 
-function onChoice(index) {
-    console.log(index); //debug
-    choice = profiles[index];
+Game.prototype.onChoice = function(choice) {
+    this.players[choice.playerId]["choice"] = profiles[choice.index];
+    console.log(players);//debug
 }
 
-function chooseProfiles(p1, p2) {
+Game.prototype.chooseProfiles = function(p1, p2) {
     overlap = intersectSafe(p1.following, p2.following);
-    if (overlap.length < 24) {return [];}
+    if (overlap.length < 24) {return overlap;}
     chosenProfiles = [];
     for (i = 0; i < 24; i++) {
         randomProfileIndex = Math.floor(Math.random() * overlap.length);
@@ -82,7 +84,7 @@ function chooseProfiles(p1, p2) {
 }
 
 function askForChoice(client) {
-    client.emit('askForChoice', profiles);
+    client.broadcast.emit('askForChoice', profiles);
 }
 
 function getFollowing(handle, cursor, following, callback) {
