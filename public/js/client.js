@@ -13,7 +13,9 @@ $(document).ready(function() {
         $("#submit-handle").on('click', function() {
             onSubmitHandle( $('#handle').val() );
         });
-        socket.on('onAskForChoice', onAskForChoice);
+        socket.on('askForChoice', onAskForChoice);
+        socket.on('yourTurn', onMyTurn);
+        socket.on('opponentsTurn', onOpponentsTurn);
     });
 });
 
@@ -23,7 +25,8 @@ function onSubmitHandle(handle) {
     showView('#waiting-view');
 }
 
-function showView(id) {
+function showView(id, callback) {
+    if(callback){ callback(); }
     viewsToHide = $('.view');
     viewToDisplay = $(id);
     viewsToHide.hide();
@@ -31,31 +34,48 @@ function showView(id) {
 }
 
 function onAskForChoice(profs) {
-    console.log('onAskForChoice', profs);
-    // profiles = profs;
-    // console.log(profiles); //debug
-    // showChooseView();
+    profiles = profs;
+    showView('#choose-view', generateChooseView);
 }
 
-function onShowChooseView() {
+function generateChooseView() {
     var choices = [];
 
    $.each(profiles, function(i, item) {
        profile = '<li><img src="'+item.profile_image_url+'" />';
-       profile += '<p><a href="#" onclick="onSelectChoice('+i+')" <strong>@'+item.screen_name+'</strong></p></li>';
+       profile += '<p><a href="#" class="profile-choice" name="'+item.screen_name+'"';
+       profile += ' <strong>@'+item.screen_name+'</strong></p></li>';
        choices.push(profile);
    });
 
    $('#choices').append( choices.join('') );
+   
+   $('.profile-choice').on('click', function() {
+       console.log($(this)); //debug
+       onSelectChoice($(this));
+   });
+}
+
+function onSelectChoice(choice) {
+    screen_name = choice.attr('name');
+    playerID = socket.id;
+    socket.emit('choice', {screen_name: screen_name, playerID: playerID});
+}
+
+function onMyTurn() {
+    console.log('my turn');
+    showView('#gameView', generateMyTurnView);
+}
+
+function onOpponentsTurn() {
+    console.log('my opp turn');
+    showView('#gameView', generateOpponentsTurnView);
+}
+
+function generateMyTurnView() {
     
-    views = $('.view');
-    chooseView = $('#choose-view');
-    views.hide();
-    chooseView.css('display', 'block');
 }
 
-function onSelectChoice(index) {
-    console.log(index); //debug
-    socket.emit('choice', {index: index, playerId: playerId});
+function generateOpponentsTurnView() {
+    
 }
-
