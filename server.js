@@ -49,12 +49,14 @@ function onSubmitHandle(handle) {
 function getTwitterProfile(playerID, callback) {
     following = JSON.parse(fs.readFileSync('players.json'));
     players[playerID]["twitterProfile"] = {following:following};
+    console.log(Helpers.allPlayersHaveAttr(players, 'twitterProfile'));
     if (Helpers.allPlayersHaveAttr(players, 'twitterProfile')) {
         callback();
     }
 }
 
 function readyToChoose() {
+    console.log('etnered');
     profiles = getMutuallyFollowing();
     console.log(profiles.length); //debug
     io.sockets.emit('askForChoice', profiles);

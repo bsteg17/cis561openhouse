@@ -2,6 +2,8 @@ var socket;
 var profiles;
 var player;
 
+var ROW_WIDTH = 5;
+
 $(document).ready(function() {
     
     $('#choices').empty();
@@ -34,21 +36,13 @@ function showView(id, callback) {
 }
 
 function onAskForChoice(profs) {
+    console.log('asked for choice');
     profiles = profs;
     showView('#choose-view', generateChooseView);
 }
 
 function generateChooseView() {
-    var choices = [];
-
-   $.each(profiles, function(i, item) {
-       profile = '<li><img src="'+item.profile_image_url+'" />';
-       profile += '<p><a href="#" class="profile-choice" name="'+item.screen_name+'"';
-       profile += ' <strong>@'+item.screen_name+'</strong></p></li>';
-       choices.push(profile);
-   });
-
-   $('#choices').append( choices.join('') );
+   generateGrid('#choices');
    
    $('.profile-choice').on('click', function() {
        console.log($(this)); //debug
@@ -64,18 +58,44 @@ function onSelectChoice(choice) {
 
 function onMyTurn() {
     console.log('my turn');
-    showView('#gameView', generateMyTurnView);
+    showView('#game-view', generateMyTurnView);
 }
 
 function onOpponentsTurn() {
     console.log('my opp turn');
-    showView('#gameView', generateOpponentsTurnView);
+    showView('#game-view', generateOpponentsTurnView);
 }
 
 function generateMyTurnView() {
-    
+    generateGrid('#my-grid');
+    generateChat();
+    //jqeury stuff
 }
 
 function generateOpponentsTurnView() {
+    generateGrid('#my-grid');
+    generateChat();
+    //jqeury stuff
+}
+
+function generateGrid(id) {
+   var profs = [];
+   grid = $(id);
+   grid.append('<tbody>');
+
+   $.each(profiles, function(i, item) {
+       if (i % ROW_WIDTH == 0) { profile = '<tr>' } else { profile = '' }
+       profile += '<td><img src="'+item.profile_image_url+'" /><br />';
+       profile += '<a href="#" class="profile-choice" name="'+item.screen_name+'"';
+       profile += ' <strong>@'+item.screen_name+'</strong></td>';
+       if ((i+1) % ROW_WIDTH == 0 || i == 23) { profile += '</tr>'; } //at end of row put 
+       profs.push(profile);
+   });
+
+   $(id).append( profs.join('') );
+   grid.append('</tbody>');
+}
+
+function generateChat() {
     
 }
