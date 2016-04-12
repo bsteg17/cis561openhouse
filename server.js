@@ -39,6 +39,7 @@ function onConnection(client) {
 function setEventHandlers(client) {
     client.on('submitHandle', onSubmitHandle);
     client.on('choice', onChoice);
+    client.on('chatMessage', onChatMessage);
 }
 
 function onSubmitHandle(handle) {
@@ -99,4 +100,11 @@ function determineFirstTurn() {
     } else {
         currentTurn = 1;
     }
+}
+
+function onChatMessage(message) {
+    handle = players['/#'+message.playerID]['handle'];
+    message = {text:message.text, handle:handle}
+    console.log(message);
+    io.sockets.emit('recieveMessage', message);
 }

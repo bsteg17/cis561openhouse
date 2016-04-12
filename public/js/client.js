@@ -15,9 +15,11 @@ $(document).ready(function() {
         $("#submit-handle").on('click', function() {
             onSubmitHandle( $('#handle').val() );
         });
+        $("#chat-submit").on('click', onSendMessage);
         socket.on('askForChoice', onAskForChoice);
         socket.on('yourTurn', onMyTurn);
         socket.on('opponentsTurn', onOpponentsTurn);
+        socket.on('recieveMessage', onRecieveMessage);
     });
 });
 
@@ -97,5 +99,20 @@ function generateGrid(id) {
 }
 
 function generateChat() {
-    
+    postMessage({text:'Welcome to Tweet-Guess', handle:'TweetGuess'});
+}
+
+function onSendMessage() {
+    input = $('#my-chat-input');
+    socket.emit('chatMessage', {text:input.val(), playerID:socket.id});
+    input.val('');
+}
+
+function onRecieveMessage(message) {
+    postMessage(message);
+}
+
+function postMessage(message) {
+    messageHistory = $('#my-chat-messages');
+    messageHistory.append('<li><strong>'+message.handle+'</strong>  -  '+message.text+'</li>');
 }
