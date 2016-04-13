@@ -26,7 +26,6 @@ Game.prototype.addPlayer = function(handle) {
     ifNotFollowingTooMany(handle, function() {
         getFollowing(handle, cursor, following, function(error, following) {
             if (error) {console.log(error);}
-            //console.log(following); //debug
             player = new Player(handle, following);
             players.push(player);
         });
@@ -34,7 +33,6 @@ Game.prototype.addPlayer = function(handle) {
 }
 
 Game.prototype.start = function(client) {
-    console.log('entered startGame');
     following = JSON.parse(fs.readFileSync('players.json'));
     player1 = new Player("stegtodiffer", following);
     player2 = new Player("antistegtodiffer", following);
@@ -68,7 +66,6 @@ Game.prototype.onDisconnection = function(client) {
 
 Game.prototype.onChoice = function(choice) {
     this.players[choice.playerId]["choice"] = profiles[choice.index];
-    console.log(players);//debug
 }
 
 Game.prototype.chooseProfiles = function(p1, p2) {

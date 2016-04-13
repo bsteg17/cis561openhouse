@@ -18,7 +18,8 @@ var PORT = 8080;
 var players = {},
     playerKeys,
     profiles,
-    currentTurn;
+    currentTurn
+    currentQuestion;
 
 app.get('/game', function(req, res) {
     res.sendFile(path.join(__dirname + '/views/game.html'));
@@ -40,9 +41,13 @@ function setEventHandlers(client) {
     client.on('submitHandle', onSubmitHandle);
     client.on('choice', onChoice);
     client.on('chatMessage', onChatMessage);
+    client.on('askQuestion', onAskQuestion);
+    client.on('replyYes', onReplyYes);
+    client.on('replyNo', onReplyNo);
 }
 
 function onSubmitHandle(handle) {
+    console.log("entered onSubmitHandle");
     players["/#"+handle.playerID]["handle"] = handle.handle;
     getTwitterProfile("/#"+handle.playerID, readyToChoose);
 }
@@ -87,6 +92,9 @@ function onChoice(choice) {
 }
 
 function beginFirstTurn() {
+    Helpers.getObjectKeys(players).forEach(function(key) {
+       players[key]['questions'] = []; 
+    });
     determineFirstTurn();
     players[playerKeys[currentTurn]].session.emit('yourTurn');
     //client1.broadcast.emit emits to every client except for client1
@@ -107,4 +115,20 @@ function onChatMessage(message) {
     message = {text:message.text, handle:handle}
     console.log(message);
     io.sockets.emit('recieveMessage', message);
+}
+
+function onAskQuestion(question) {
+    player = players['/#'+question.playerID];
+    currentQuestion = {text:question.text, handle:player.handle}
+    console.log(question);
+    player['session'].emit('myQuestion', currentQuestion);
+    player['session'].broadcast.emit('myOpponentsQuestion', currentQuestion);
+}
+
+function replyYes() {
+    
+}
+
+function replyNo() {
+    
 }
