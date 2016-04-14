@@ -4,12 +4,9 @@ span.handle {
 }
 
 #handle-input-view {
-    margin-top: 25px;
-    font-size: 21px;
-    text-align: center;
-    animation: fadein 1s;
-    -moz-animation: fadein 1s; /* Firefox */
-    -webkit-animation: fadein 1s; /* Safari and Chrome */
+    animation: fadein .5s;
+    -moz-animation: fadein .5s; /* Firefox */
+    -webkit-animation: fadein .5s; /* Safari and Chrome */
 }
 @keyframes fadein {
     from {
@@ -39,16 +36,21 @@ span.handle {
 }
 
 body {
-    background-color:#6EFF70;
+    
 }
 
 .handle-input {
+    background-color:#6EFF70;
     height:800px;
     font-size:100px;
     color: #FFFFFF;
-    text-align: center;
     vertical-align: middle;
+    text-align: center;
     line-height: 400px;   
+}
+
+.hillary-clinton {
+    text-align: center;
 }
 
 .handle-input input {
@@ -61,4 +63,60 @@ body {
 
 .handle-input input:focus {
     outline:none;
+}
+
+.done {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s .25s, opacity .25s linear;
+}
+
+.waiting {
+    color:#FFFFFF;
+}
+
+.waiting-main-title {
+    font-size:100px;
+}
+.waiting-sub-title {
+    font-size:60px;
+}
+
+.imageWrap {
+    position:relative;
+}
+
+.imageCaption {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  color: #fff;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+
+
+  visibility: hidden;
+  opacity: 0;
+  
+}
+
+
+.imageWrap:hover .imageCaption {
+  visibility: visible;
+  opacity: 1;
+}
+
+.hvr-float {
+  vertical-align: middle;
+  transform: translateX(0);
+  backface-visibility: hidden;
+  transition-duration: 0.3s;
+  transition-property: transform;
+  transition-timing-function: ease-out;
+}
+.hvr-float:hover,
+.hvr-float:focus,
+.hvr-float:active {
+  transform: translateY(-8px);
 }

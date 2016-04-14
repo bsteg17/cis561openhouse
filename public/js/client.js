@@ -3,7 +3,8 @@ var profiles;
 var me;
 var gameViewLoaded = false;
 
-var ROW_WIDTH = 5;
+var ROW_WIDTH = 6,
+    IMAGE_SIDE_LENGTH = document.documentElement.clientWidth / 6.075;
 
 $(document).ready(function() {
     
@@ -17,16 +18,21 @@ $(document).ready(function() {
         //when enter button is push on handle select screen
         $('.handle-input input').keypress(function (e) {
             if (e.which == 13) {
-                onSubmitHandle( $('input.handle-input').val() );
-                return false;
+                $('.handle-input').addClass('done');
+                setTimeout(function() {
+                    onSubmitHandle( $('.handle-input input').val() );
+                    return false;
+                }, 750);
             }
         });
         $('.handle-input input').on('input', function() {
             console.log($(this).val());
             if($(this).val().length > 0) {
                 $('.trailing-question-mark').hide();
+                $('.twitter-logo').hide();
             } else {
                 $('.trailing-question-mark').show();
+                $('.twitter-logo').show();
             }
         });
         
@@ -55,7 +61,7 @@ $(document).ready(function() {
 
 function onSubmitHandle(handle) {
     socket.emit('submitHandle', {playerID:socket.id, handle:handle});
-    showView('#waiting-view');
+    showView('#waiting-view', gradualShowWaiting());
 }
 
 function showView(id, callback) {
@@ -125,19 +131,17 @@ function generateMyFixedGameView() {
 function generateGrid(id) {
    var profs = [];
    grid = $(id);
-   grid.append('<tbody>');
 
    $.each(profiles, function(i, item) {
-       if (i % ROW_WIDTH == 0) { profile = '<tr>' } else { profile = '' }
-       profile += '<td><img height="50" width="50" class="profile-pic" id="image-'+item.screen_name+'" src="'+item.profile_image_url+'" /><br />';
-       profile += '<a href="#" class="profile-choice" name="'+item.screen_name+'"';
-       profile += ' <strong>@'+item.screen_name+'</strong></td>';
-       if ((i+1) % ROW_WIDTH == 0 || i == 23) { profile += '</tr>'; } //at end of row put 
+       profile = '<span class="imageWrap hvr-float">';
+       profile += '<img src="'+item.profile_image_url+'" height="'+IMAGE_SIDE_LENGTH+'" width="'+IMAGE_SIDE_LENGTH+'" />';
+       profile += '<span class="imageCaption">@'+item.screen_name+'</span>';
+       profile += '</span>';
+       if ((i+1) % ROW_WIDTH == 0 || i == 23) { profile += '<br />'; } //at end of row put 
        profs.push(profile);
    });
 
    $(id).append( profs.join('') );
-   grid.append('</tbody>');
 }
 
 function generateChat() {
@@ -216,4 +220,32 @@ function youLose() {
     showView('#you-lose');
 }
 
+function gradualShowWaiting() {
+    setTimeout(function() {
+        if ($('#game-view').attr('display','none')) {
+            $('.waiting-main-title').show();
+            setTimeout(function() {
+                if ($('#game-view').attr('display','none')) {
+                    $('.waiting-sub-title').show();
+                    setTimeout(function() {
+                        if ($('#game-view').attr('display','none')) {
+                            $('.loading').show();
+                        }
+                    }, 500);
+                }
+            }, 500);
+        }
+    }, 200);
+}
+
 $('.handle-input input').autoGrowInput({comfortZone:0,maxWidth:700});
+
+
+function randomHex() {
+    hex_digits = ['1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'];
+    hex = "";
+    for (i = 0; i < 6; i++) {
+        hex += hex_digits[Math.floor(Math.random() * 16) - 1];
+    }
+    return '#'+hex;
+}

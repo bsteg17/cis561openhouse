@@ -1,24 +1,35 @@
 
 <div id="choose-view" class="view" style="display:none;">
-    <table id="choices"></table>
+    <div id="choices"></div>
 </div>
 
 <div id="handle-input-view" class="view" style="display:none;">
     
     <div class="handle-input">
-    <i class="fa fa-twitter"></i>
+    <span class="twitter-logo"><i class="fa fa-twitter"></i></span>
     <span>@<input type="text" autocomplete="off" autofocus/><span class="trailing-question-mark">?</span></span>
     </div>
 </div>
 
 <div id="waiting-view" class="view" style="display:none;">
-    <h1>Hang tight...waiting for second player</h1>
+    <div class="waiting">
+        <div class="row">
+            <span class="waiting-main-title col-md-8" style="display:none;">Hang tight</span><br />
+        </div>
+        <div class="row">
+            <span class="waiting-sub-title col-md-10 col-md-offset-2" style="display:none;">waiting for second player</span>
+        </div>
+        <div style="height:20px;"></div>
+        <div class="row">
+            <object class="col-md-2 col-md-offset-5 loading" type="image/svg+xml" data="/images/loading.svg" style="display:none;"></object>
+        </div>
+    </div>
 </div>
 
 <div id="game-view" class="view" style="display:none;">
     <div class="row">
         <div class="col-md-8">
-            <table id="my-grid"></table>
+            <div id="my-grid"></div>
             <ul id="my-chat-messages"></ul>
             <input id="my-chat-input" type="text" />
             <button id="chat-submit">Send</button>
@@ -53,6 +64,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 <!-- My home made CSS -->
 <link rel="stylesheet" href="/css/custom.css">
+<link href="/css/hover-min.css" rel="stylesheet" media="all">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 <script src="/js/auto-resize.js"></script>
