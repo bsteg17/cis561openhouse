@@ -85,6 +85,7 @@ function generateChooseView() {
    });
 }
 
+
 function onSelectChoice(choice) {
     screen_name = choice.attr('name');
     playerID = socket.id;
@@ -125,6 +126,10 @@ function generateMyFixedGameView() {
         generateGrid('#my-grid');
         generateChat();
         gameViewLoaded = true;
+        $(document).on('click', '.profile-choice', function(e) {
+            onClickProfilePic($(this));
+            e.preventDefault();
+        });
     });
 }
 
@@ -133,10 +138,10 @@ function generateGrid(id) {
    grid = $(id);
 
    $.each(profiles, function(i, item) {
-       profile = '<span class="imageWrap hvr-float">';
+       profile = '<span class="imageWrap hvr-float"><a class="profile-choice" href="#">';
        profile += '<img src="'+item.profile_image_url+'" height="'+IMAGE_SIDE_LENGTH+'" width="'+IMAGE_SIDE_LENGTH+'" />';
-       profile += '<span class="imageCaption">@'+item.screen_name+'</span>';
-       profile += '</span>';
+       profile += '<span class="imageCaption hvr-bounce-in-right">@'+item.screen_name+'</span>';
+       profile += '</a></span>';
        if ((i+1) % ROW_WIDTH == 0 || i == 23) { profile += '<br />'; } //at end of row put 
        profs.push(profile);
    });
@@ -146,6 +151,17 @@ function generateGrid(id) {
 
 function generateChat() {
     postMessage({text:'Welcome to Tweet-Guess', handle:'TweetGuess'});
+}
+
+function onClickProfilePic(pic) {
+    if(pic.parent().attr('class').indexOf('hvr-float') > -1) {
+        pic.parent().removeClass('hvr-float');
+        pic.parent().addClass('eliminated');
+        console.log(pic);
+    } else {
+        pic.parent().removeClass('eliminated');
+        pic.parent().addClass('hvr-float');
+    }
 }
 
 function onChatInputChange(input) {

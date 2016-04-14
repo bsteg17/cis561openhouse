@@ -36,11 +36,10 @@ span.handle {
 }
 
 body {
-    
+    background-color:#6EFF70;
 }
 
 .handle-input {
-    background-color:#6EFF70;
     height:800px;
     font-size:100px;
     color: #FFFFFF;
@@ -94,21 +93,20 @@ body {
   right: 0;
   color: #fff;
   text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-
-
+  display:inline-block;
+  vertical-align: middle;
+  line-height:300px;
   visibility: hidden;
   opacity: 0;
-  
 }
-
 
 .imageWrap:hover .imageCaption {
   visibility: visible;
   opacity: 1;
+  display:inline-block;
 }
 
 .hvr-float {
-  vertical-align: middle;
   transform: translateX(0);
   backface-visibility: hidden;
   transition-duration: 0.3s;
@@ -120,3 +118,25 @@ body {
 .hvr-float:active {
   transform: translateY(-8px);
 }
+
+.hvr-bounce-in-right {
+  transform: translateX(0);
+  backface-visibility: hidden;
+  transition-duration: 0.3s;
+  transition-property: transform;
+  transition-timing-function: ease-out;
+}
+.hvr-bounce-in-right:hover,
+.hvr-bounce-in-right:focus,
+.hvr-bounce-in-right:active {
+  transform: translateX(20px);
+}
+
+.eliminated {
+    -webkit-transition: none !important;
+    transition: none !important;
+}
+
+.eliminated:before { 
+    background: rgba(0,0,0, 0.5);
+ }
