@@ -16,9 +16,10 @@ app.use(bodyParser());
 var PORT = 8080;
 
 var players = {},
+    questions = [],
     playerKeys,
     profiles,
-    currentTurn
+    currentTurn,
     currentQuestion;
 
 app.get('/game', function(req, res) {
@@ -42,8 +43,7 @@ function setEventHandlers(client) {
     client.on('choice', onChoice);
     client.on('chatMessage', onChatMessage);
     client.on('askQuestion', onAskQuestion);
-    client.on('replyYes', onReplyYes);
-    client.on('replyNo', onReplyNo);
+    client.on('replyWithAnswer', onReplyWithAnswer);
 }
 
 function onSubmitHandle(handle) {
@@ -110,6 +110,13 @@ function determineFirstTurn() {
     }
 }
 
+function startNextTurn() {
+    currentTurn = (currentTurn + 1) % 2;
+    players[playerKeys[currentTurn]].session.emit('yourTurn');
+    //client1.broadcast.emit emits to every client except for client1
+    players[playerKeys[currentTurn]].session.broadcast.emit('opponentsTurn');
+}
+
 function onChatMessage(message) {
     handle = players['/#'+message.playerID]['handle'];
     message = {text:message.text, handle:handle}
@@ -125,10 +132,11 @@ function onAskQuestion(question) {
     player['session'].broadcast.emit('myOpponentsQuestion', currentQuestion);
 }
 
-function replyYes() {
-    
-}
-
-function replyNo() {
-    
+function onReplyWithAnswer(answer) {
+    currentQuestion['answer'] = answer;
+    questions.push(currentQuestion);
+    io.sockets.emit('addQuestionToLog', currentQuestion);
+    console.log(questions);
+    io.sockets.emit('addQuestionToLog', currentQuestion);
+    startNextTurn();
 }

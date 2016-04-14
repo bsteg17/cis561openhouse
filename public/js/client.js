@@ -1,6 +1,7 @@
 var socket;
 var profiles;
 var me;
+var gameViewLoaded = false;
 
 var ROW_WIDTH = 5;
 
@@ -15,16 +16,24 @@ $(document).ready(function() {
         $("#submit-handle").on('click', function() {
             onSubmitHandle( $('#handle').val() );
         });
+        $("#my-chat-input").on('input', function() {
+            onChatInputChange($(this));
+        });
         $("#chat-submit").on('click', onSendMessage);
-        $("#question-submit").on('click', onAskQuestion);
-        $(document).on('click', '#yes', replyYes);
-        $(document).on('click', '#no', replyNo);
+        $("#question-submit").on('click', function() {
+            onAskQuestion($(this));
+        });
+        $(document).on('click', '.answer', function() {
+            console.log($(this).val())
+            replyWithAnswer($(this).val());
+        });
         socket.on('askForChoice', onAskForChoice);
         socket.on('yourTurn', onMyTurn);
         socket.on('opponentsTurn', onOpponentsTurn);
         socket.on('recieveMessage', onRecieveMessage);
         socket.on('myQuestion', onMyQuestion);
         socket.on('myOpponentsQuestion', onOpponentsQuestion);
+        socket.on('addQuestionToLog', onAddQuestionToLog);
     });
 });
 
@@ -62,24 +71,34 @@ function onSelectChoice(choice) {
 
 function onMyTurn() {
     console.log('my turn'); //debug
-    showView('#game-view', generateMyTurnView);
+    if (!gameViewLoaded) {
+        generateMyFixedGameView();
+    }
+    generateMyTurnView();
 }
 
 function onOpponentsTurn() {
     console.log('my opp turn'); //debug
-    showView('#game-view', generateOpponentsTurnView);
+    if (!gameViewLoaded) {
+        generateMyFixedGameView();
+    }
+    generateOpponentsTurnView();
 }
 
-function generateMyTurnView() {
-    generateGrid('#my-grid');
-    generateChat();
+function generateMyTurnView() {    
     $('#question-submit').prop('disabled', false);
 }
 
 function generateOpponentsTurnView() {
-    generateGrid('#my-grid');
-    generateChat();
     $('#question-submit').prop('disabled', true);
+}
+
+function generateMyFixedGameView() {
+    showView('#game-view', function() {
+        generateGrid('#my-grid');
+        generateChat();
+        gameViewLoaded = true;
+    });
 }
 
 function generateGrid(id) {
@@ -102,6 +121,18 @@ function generateGrid(id) {
 
 function generateChat() {
     postMessage({text:'Welcome to Tweet-Guess', handle:'TweetGuess'});
+}
+
+function onChatInputChange(input) {
+    console.log(input.val());
+    regexDetectHandle = /\@(\S+)?/;
+    handles = input.val().match(regexDetectHandle);
+    console.log(handles);
+    if (handles != null) {
+        $('#handle-to-guess').html('Guess if the winning card is<br/><span class="handle">'+handles[0]+'</span>?');
+    } else {
+        $('#handle-to-guess').html('');
+    }
 }
 
 function onSendMessage() {
@@ -127,34 +158,25 @@ function onAskQuestion() {
 }
 
 function onMyQuestion(question) {
-    console.log('my question: '+question);
-    postMyQuestion(question);
-}
-
-function onOpponentsQuestion(question) {
-    console.log('my opps question: '+question);
-    postOpponentsQuestion(question);
-}
-
-function postMyQuestion(question) {
     console.log('entered postmyquestion'); //debug
     messageHistory = $('#my-chat-messages');
     messageHistory.append('<li class="question"><strong>'+question.handle+'</strong>  -  '+question.text+'</li>');
 }
 
-function postOpponentsQuestion(question) {
+function onOpponentsQuestion(question) {
     console.log('entered postopponentsquestion'); //debug
     messageHistory = $('#my-chat-messages');
     messageHistory.append('<li class="question"><strong>'+question.handle+'</strong>  -  '+question.text+'</li>');
-    messageHistory.append('<li id="answer"><button id="yes">YES</button><button id="no">NO</button></li>');
+    messageHistory.append('<li class="answer-wrapper"><button value="yes" class="answer" id="yes">YES</button><button value="no" class="answer" id="no">NO</button></li>');
 }
 
-function replyYes() {
-    $('#answer').remove();
-    socket.emit('replyYes');
+function replyWithAnswer(answer) {
+    $('.answer-wrapper').remove();
+    socket.emit('replyWithAnswer', answer);
 }
 
-function replyNo() {
-    $('#answer').remove();
-    socket.emit('replyNo');
+function onAddQuestionToLog(question) {
+    $('#question-history').append('<li class="logged-question">'+question.text+'</li>');
+    $('#question-history').append('<li class="logged-answer">&nbsp;&nbsp;'+question.answer+'</li>');
 }
+
