@@ -7,9 +7,9 @@ span.handle {
     margin-top: 25px;
     font-size: 21px;
     text-align: center;
-    animation: fadein 2s;
-    -moz-animation: fadein 2s; /* Firefox */
-    -webkit-animation: fadein 2s; /* Safari and Chrome */
+    animation: fadein 1s;
+    -moz-animation: fadein 1s; /* Firefox */
+    -webkit-animation: fadein 1s; /* Safari and Chrome */
 }
 @keyframes fadein {
     from {
@@ -42,6 +42,23 @@ body {
     background-color:#6EFF70;
 }
 
-{
-    -webkit-appearance: none;
-} 
+.handle-input {
+    height:800px;
+    font-size:100px;
+    color: #FFFFFF;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 400px;   
+}
+
+.handle-input input {
+    height: 140px;
+    line-height: 70px; 
+    vertical-align: middle;
+    background-color: transparent;
+    border: 0px solid;
+}
+
+.handle-input input:focus {
+    outline:none;
+}

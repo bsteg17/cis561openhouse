@@ -13,9 +13,23 @@ $(document).ready(function() {
     socket.on('connect', function() {
         console.log("connected");
         showView('#handle-input-view');
-        $("#submit-handle").on('click', function() {
-            onSubmitHandle( $('#handle').val() );
+        
+        //when enter button is push on handle select screen
+        $('.handle-input input').keypress(function (e) {
+            if (e.which == 13) {
+                onSubmitHandle( $('input.handle-input').val() );
+                return false;
+            }
         });
+        $('.handle-input input').on('input', function() {
+            console.log($(this).val());
+            if($(this).val().length > 0) {
+                $('.trailing-question-mark').hide();
+            } else {
+                $('.trailing-question-mark').show();
+            }
+        });
+        
         $("#chat-submit").on('click', onSendMessage);
         $("#question-submit").on('click', function() {
             onAskQuestion($(this));
@@ -36,6 +50,8 @@ $(document).ready(function() {
         socket.on('youLose', youLose);
     });
 });
+
+
 
 function onSubmitHandle(handle) {
     socket.emit('submitHandle', {playerID:socket.id, handle:handle});
@@ -199,3 +215,5 @@ function youWin() {
 function youLose() {
     showView('#you-lose');
 }
+
+$('.handle-input input').autoGrowInput({comfortZone:0,maxWidth:700});
