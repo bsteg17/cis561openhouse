@@ -22,7 +22,11 @@
             <input id="my-chat-input" type="text" />
             <button id="chat-submit">Send</button>
             <button id="question-submit">Ask</button>
-            <div id="handle-to-guess"></div>
+            <div id="handle-to-guess" style="display:none;">
+                Guess if the winning card is<br/>
+                <span class="handle"></span>?<br/>
+                <button id="guess-submit">Guess</button>
+            </div>
         </div>
         <div class="col-md-4">
             <h4>Question Log</h4>
@@ -30,6 +34,14 @@
             </ul>
         </div>
     </div>
+</div>
+
+<div class="view" id="you-win" style="display:none;">
+    <h1>YOU WIN</h1>
+</div>
+
+<div class="view" id="you-lose" style="display:none;">
+    <h1>YOU LOSE</h1>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>

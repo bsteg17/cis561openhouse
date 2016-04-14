@@ -50,3 +50,12 @@ module.exports.allPlayersHaveAttr = function(players, attr) {
     }
     return true && module.exports.numKeys(players) == 2;
 }
+
+module.exports.getOpponent = function(players, playerID) {
+    for (var key in players) {
+        if (key != '/#'+playerID) {
+            return players[key];
+        }
+    }
+    return null;
+}

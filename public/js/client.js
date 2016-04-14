@@ -16,13 +16,11 @@ $(document).ready(function() {
         $("#submit-handle").on('click', function() {
             onSubmitHandle( $('#handle').val() );
         });
-        $("#my-chat-input").on('input', function() {
-            onChatInputChange($(this));
-        });
         $("#chat-submit").on('click', onSendMessage);
         $("#question-submit").on('click', function() {
             onAskQuestion($(this));
         });
+        $('#guess-submit').on('click', onGuessSubmit);
         $(document).on('click', '.answer', function() {
             console.log($(this).val())
             replyWithAnswer($(this).val());
@@ -34,6 +32,8 @@ $(document).ready(function() {
         socket.on('myQuestion', onMyQuestion);
         socket.on('myOpponentsQuestion', onOpponentsQuestion);
         socket.on('addQuestionToLog', onAddQuestionToLog);
+        socket.on('youWin', youWin);
+        socket.on('youLose', youLose);
     });
 });
 
@@ -74,23 +74,28 @@ function onMyTurn() {
     if (!gameViewLoaded) {
         generateMyFixedGameView();
     }
+    $("#my-chat-input").on('input', function() {
+            onChatInputChange($(this));
+    });
     generateMyTurnView();
 }
 
 function onOpponentsTurn() {
+    $('#handle-to-guess').hide();
     console.log('my opp turn'); //debug
     if (!gameViewLoaded) {
         generateMyFixedGameView();
     }
+    $("#my-chat-input").off().on('input');
     generateOpponentsTurnView();
 }
 
 function generateMyTurnView() {    
-    $('#question-submit').prop('disabled', false);
+    $('#question-submit').show();
 }
 
 function generateOpponentsTurnView() {
-    $('#question-submit').prop('disabled', true);
+    $('#question-submit').hide();
 }
 
 function generateMyFixedGameView() {
@@ -108,7 +113,7 @@ function generateGrid(id) {
 
    $.each(profiles, function(i, item) {
        if (i % ROW_WIDTH == 0) { profile = '<tr>' } else { profile = '' }
-       profile += '<td><img src="'+item.profile_image_url+'" /><br />';
+       profile += '<td><img height="50" width="50" class="profile-pic" id="image-'+item.screen_name+'" src="'+item.profile_image_url+'" /><br />';
        profile += '<a href="#" class="profile-choice" name="'+item.screen_name+'"';
        profile += ' <strong>@'+item.screen_name+'</strong></td>';
        if ((i+1) % ROW_WIDTH == 0 || i == 23) { profile += '</tr>'; } //at end of row put 
@@ -124,14 +129,15 @@ function generateChat() {
 }
 
 function onChatInputChange(input) {
-    console.log(input.val());
     regexDetectHandle = /\@(\S+)?/;
     handles = input.val().match(regexDetectHandle);
-    console.log(handles);
     if (handles != null) {
-        $('#handle-to-guess').html('Guess if the winning card is<br/><span class="handle">'+handles[0]+'</span>?');
+        $('.handle').text(handles[0]);
+        $('#handle-to-guess').show();
+        $('#question-submit').hide();
     } else {
-        $('#handle-to-guess').html('');
+        $('#handle-to-guess').hide();
+        $('#question-submit').show();
     }
 }
 
@@ -151,7 +157,7 @@ function postMessage(message) {
 }
 
 function onAskQuestion() {
-    $('#question-submit').prop('disabled', true);
+    $('#question-submit').hide();
     input = $('#my-chat-input');
     socket.emit('askQuestion', {text:input.val(), playerID:socket.id});
     input.val('');
@@ -180,3 +186,16 @@ function onAddQuestionToLog(question) {
     $('#question-history').append('<li class="logged-answer">&nbsp;&nbsp;'+question.answer+'</li>');
 }
 
+function onGuessSubmit() {
+    console.log('onguesssubmit');
+    handle = $('.handle').text().substr(1);
+    socket.emit('guess', {playerID:socket.id, handle:handle});
+}
+
+function youWin() {
+    showView('#you-win');
+}
+
+function youLose() {
+    showView('#you-lose');
+}

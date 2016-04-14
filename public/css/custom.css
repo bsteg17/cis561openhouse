@@ -2,3 +2,46 @@ span.handle {
     font-size:2em;
     color:#4099FF;
 }
+
+#handle-input-view {
+    margin-top: 25px;
+    font-size: 21px;
+    text-align: center;
+    animation: fadein 2s;
+    -moz-animation: fadein 2s; /* Firefox */
+    -webkit-animation: fadein 2s; /* Safari and Chrome */
+}
+@keyframes fadein {
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+/* Firefox */
+@-moz-keyframes fadein { 
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+/* Safari / Chrome */
+@-webkit-keyframes fadein { 
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+
+body {
+    background-color:#6EFF70;
+}
+
+{
+    -webkit-appearance: none;
+} 

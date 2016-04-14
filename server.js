@@ -44,6 +44,7 @@ function setEventHandlers(client) {
     client.on('chatMessage', onChatMessage);
     client.on('askQuestion', onAskQuestion);
     client.on('replyWithAnswer', onReplyWithAnswer);
+    client.on('guess', onGuess);
 }
 
 function onSubmitHandle(handle) {
@@ -136,7 +137,22 @@ function onReplyWithAnswer(answer) {
     currentQuestion['answer'] = answer;
     questions.push(currentQuestion);
     io.sockets.emit('addQuestionToLog', currentQuestion);
-    console.log(questions);
-    io.sockets.emit('addQuestionToLog', currentQuestion);
     startNextTurn();
+}
+
+function onGuess(guess) {
+    player = players['/#'+guess.playerID];
+    opponent = Helpers.getOpponent(players, guess.playerID);
+    console.log(guess);
+    if (guess.handle == opponent['choice']) {
+        playerWins(player, opponent);
+    } else {
+        io.sockets.emit('addQuestionToLog', {text:'@'+guess.handle+'?', answer:'No'});
+        startNextTurn();
+    }
+}
+
+function playerWins(player, opponent) {
+    player.session.emit('youWin');
+    opponent.session.emit('youLose');
 }
