@@ -30,18 +30,22 @@
 
 <div id="game-view" class="view" style="display:none;">
     <div class="row">
-        <div class="col-md-8">
-            <div class="wrap">
+        <div class="col-md-12">
+         <div class="wrap">
             <div id="my-grid"></div>
-            </div>
+         </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
             <ul id="my-chat-messages"></ul>
             <input id="my-chat-input" type="text" />
-            <button id="chat-submit">Send</button>
-            <button id="question-submit">Ask</button>
+            <button id="question-submit" class="btn btn-primary">Ask</button>
+            <button id="chat-submit" class="btn btn-secondary">Send</button>
             <div id="handle-to-guess" style="display:none;">
                 Guess if the winning card is<br/>
-                <span class="handle-to-guess"></span>?<br/>
-                <button id="guess-submit">Guess</button>
+                <span class="handle" ></span>?<br/>
+                <button id="guess-submit" class="btn btn-primary">Guess</button>
             </div>
         </div>
         <div class="col-md-4">
@@ -62,16 +66,16 @@
 
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.1/css/font-awesome.css">
-<link rel="stylesheet" href="/css/tint.css">
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 <!-- Optional theme -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 <!-- My home made CSS -->
 <link rel="stylesheet" href="/css/custom.css">
+<link rel="stylesheet" href="/css/tint.css">
 <link href="/css/hover-min.css" rel="stylesheet" media="all">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 <script src="/js/auto-resize.js"></script>
-<script src="/js/prefixfree.min.js"></script>
+<!--<script src="/js/prefixfree.min.js"></script>-->
 <script src="/js/client.js"></script>

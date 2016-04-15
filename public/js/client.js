@@ -138,7 +138,7 @@ function generateGrid(id) {
    grid = $(id);
 
    $.each(profiles, function(i, item) {
-       profile = '<span class="imageWrap hvr-float"><a class="profile-choice" href="#">';
+       profile = '<span class="imageWrap hvr-float"><a class="profile-choice" name="'+item.screen_name+'" href="#">';
        profile += '<img src="'+item.profile_image_url+'" height="'+IMAGE_SIDE_LENGTH+'" width="'+IMAGE_SIDE_LENGTH+'" />';
        profile += '<span class="imageCaption hvr-bounce-in-right">@'+item.screen_name+'</span>';
        profile += '</a></span>';

@@ -48,7 +48,6 @@ function setEventHandlers(client) {
 }
 
 function onSubmitHandle(handle) {
-    console.log("entered onSubmitHandle");
     players["/#"+handle.playerID]["handle"] = handle.handle;
     getTwitterProfile("/#"+handle.playerID, readyToChoose);
 }
@@ -56,16 +55,13 @@ function onSubmitHandle(handle) {
 function getTwitterProfile(playerID, callback) {
     following = JSON.parse(fs.readFileSync('players.json'));
     players[playerID]["twitterProfile"] = {following:following};
-    console.log(Helpers.allPlayersHaveAttr(players, 'twitterProfile'));
     if (Helpers.allPlayersHaveAttr(players, 'twitterProfile')) {
         callback();
     }
 }
 
 function readyToChoose() {
-    console.log('etnered');
     profiles = getMutuallyFollowing();
-    console.log(profiles.length); //debug
     io.sockets.emit('askForChoice', profiles);
 }
 
@@ -143,7 +139,7 @@ function onReplyWithAnswer(answer) {
 function onGuess(guess) {
     player = players['/#'+guess.playerID];
     opponent = Helpers.getOpponent(players, guess.playerID);
-    console.log(guess);
+    console.log(opponent); //debug
     if (guess.handle == opponent['choice']) {
         playerWins(player, opponent);
     } else {
