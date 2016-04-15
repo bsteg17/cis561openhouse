@@ -74,6 +74,7 @@ function showView(id, callback) {
 
 function onAskForChoice(profs) {
     profiles = profs;
+    console.log(profs);
     showView('#choose-view', generateChooseView);
 }
 
@@ -139,7 +140,7 @@ function generateGrid(id) {
 
    $.each(profiles, function(i, item) {
        profile = '<span class="imageWrap hvr-float"><a class="profile-choice" name="'+item.screen_name+'" href="#">';
-       profile += '<img src="'+item.profile_image_url+'" height="'+IMAGE_SIDE_LENGTH+'" width="'+IMAGE_SIDE_LENGTH+'" />';
+       profile += '<img src="'+item.profile_image_url.replace('_normal.png','.png')+'" height="'+IMAGE_SIDE_LENGTH+'" width="'+IMAGE_SIDE_LENGTH+'" />';
        profile += '<span class="imageCaption hvr-bounce-in-right">@'+item.screen_name+'</span>';
        profile += '</a></span>';
        if ((i+1) % ROW_WIDTH == 0 || i == 23) { profile += '<br />'; } //at end of row put 
@@ -218,8 +219,10 @@ function replyWithAnswer(answer) {
 }
 
 function onAddQuestionToLog(question) {
+    $('#question-history').append('<li class="logged-handle">'+question.handle+'</li>');
     $('#question-history').append('<li class="logged-question">'+question.text+'</li>');
     $('#question-history').append('<li class="logged-answer">&nbsp;&nbsp;'+question.answer+'</li>');
+    $('#question-history').append('<li>---------------------------------</li>');
 }
 
 function onGuessSubmit() {

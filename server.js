@@ -4,6 +4,7 @@ express = require('express');
 path = require('path');
 bodyParser = require('body-parser');
 fs = require('fs');
+_ = require('underscore');
 Helpers = new require('./helpers/helpers.js');
 
 app = new express();
@@ -14,6 +15,13 @@ app.use(express.static('public'));
 app.use(bodyParser());
 
 var PORT = 8080;
+
+var twitter = new Twitter({
+  consumer_key: secrets.consumer_key,
+  consumer_secret: secrets.consumer_secret,
+  access_token_key: secrets.access_token_key,
+  access_token_secret: secrets.access_token_secret
+});
 
 var players = {},
     questions = [],
@@ -53,15 +61,55 @@ function onSubmitHandle(handle) {
 }
 
 function getTwitterProfile(playerID, callback) {
-    following = JSON.parse(fs.readFileSync('players.json'));
-    players[playerID]["twitterProfile"] = {following:following};
-    if (Helpers.allPlayersHaveAttr(players, 'twitterProfile')) {
-        callback();
-    }
+    ifNotFollowingTooMany(players[playerID]["handle"], function() {
+        getFollowing(players[playerID]["handle"], -1, [], function(err, following) {
+            if (err) {console.log(err);
+                console.log("getTwitterProfile");}
+            players[playerID]["twitterProfile"] = {following:following};
+            if (Helpers.allPlayersHaveAttr(players, 'twitterProfile')) {
+                callback();
+            }
+        });
+    });
+}
+
+function ifNotFollowingTooMany(handle, callback) {
+    params = {screen_name:handle};
+    twitter.get('users/show', params, function(error, user, response){
+      if (!error) {
+          if (user.friends_count < 1000) {
+              callback();
+          } else {
+              console.log("sorry you're following too many people. you are too popular/desparate to play this game.");
+          }
+      } else {
+          console.log(error + " ifNotFollowingTooMany");
+      }
+    });
+}
+
+function getFollowing(handle, cursor, following, callback) {
+    var params = {screen_name: handle, cursor: cursor, count: 200};
+    twitter.get('friends/list', params, function(error, followingBatch, response){
+      if (!error) {
+        followingBatch.users.forEach(function(user) {
+            following.push(user);
+        });
+        cursor = followingBatch.next_cursor;
+        if (cursor == 0) {
+          callback(null, following);
+        } else {
+          getFollowing(handle, cursor, following, callback)
+        }
+      } else {
+        callback(error, following);
+      }
+    });
 }
 
 function readyToChoose() {
     profiles = getMutuallyFollowing();
+    if (profiles.length == 0) {console.log("Not following enough of the same people.");}
     io.sockets.emit('askForChoice', profiles);
 }
 
