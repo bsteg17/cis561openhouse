@@ -117,6 +117,7 @@ function getMutuallyFollowing() {
     playersValues = Helpers.getObjectValues(players);
     p1 = playersValues[0];
     p2 = playersValues[1];
+    console.log(p1['twitterProfile']['following']);
     overlap = Helpers.intersectSafe(p1['twitterProfile']['following'], p2['twitterProfile']['following']);
     if (overlap.length < 24) {return [];}
     chosenProfiles = [];
@@ -197,6 +198,6 @@ function onGuess(guess) {
 }
 
 function playerWins(player, opponent) {
-    player.session.emit('youWin');
-    opponent.session.emit('youLose');
+    player.session.emit('youWin', questions);
+    opponent.session.emit('youLose', questions);
 }

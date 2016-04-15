@@ -73,6 +73,17 @@ function showView(id, callback) {
 }
 
 function onAskForChoice(profs) {
+    alert("So first you have to choose a profile picture. This is the pic for the"+
+    "account that your opponent must guess in order to win. Once you pick, the player"+
+    "who is randomly assigned first turn will be able to ask the other player a question."+
+    "All answers should be truthful, we'll be able to see the questions and answers"+
+    "after the game is over and we know who the other player's card was. So anyway players"+
+    "take turns asking yes/no questions to try and deduce the other player's profile "+
+    "(you can click on the pictures to help you keep track of who cannot be the other"+
+    "player's card.) When you're ready to guess at a specific profile, type the twitter"+
+    "handle of that profile into the chat box and press the guess button (putting the '@'"+
+    "in front is important.) Like I said before, first one to guess the other's chosen"+
+    "profile wins the game.");
     profiles = profs;
     console.log(profs);
     showView('#choose-view', generateChooseView);
@@ -231,13 +242,26 @@ function onGuessSubmit() {
     socket.emit('guess', {playerID:socket.id, handle:handle});
 }
 
-function youWin() {
+function youWin(questions) {
     showView('#you-win');
+    // listQuestionsForReview();
 }
 
-function youLose() {
+function youLose(questions) {
     showView('#you-lose');
+    // listQuestionsForReview();
 }
+
+// function listQuestionsForReview() {
+//     questions.forEach(function(q){
+//         qList = $('.questions-review');
+//         question = "<strong>"+q.handle+"</strong><br />";
+//         question += q.text+"<br />";
+//         question += q.answer+"<br />"
+//         question += "<hr />";
+//         qList.html(qList.innerHtml()+question);
+//     });
+// }
 
 function gradualShowWaiting() {
     setTimeout(function() {
