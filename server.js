@@ -116,7 +116,6 @@ function getMutuallyFollowing() {
     playersValues = Helpers.getObjectValues(players);
     p1 = playersValues[0];
     p2 = playersValues[1];
-    console.log(p1['twitterProfile']['following']);
     overlap = Helpers.intersectSafe(p1['twitterProfile']['following'], p2['twitterProfile']['following']);
     if (overlap.length < 24) {return [];}
     chosenProfiles = [];
@@ -129,7 +128,6 @@ function getMutuallyFollowing() {
 }
 
 function onChoice(choice) {
-    console.log(choice);
     players['/#'+choice.playerID]["choice"] = choice.screen_name;
     if (Helpers.allPlayersHaveAttr(players, 'choice')) {
         beginFirstTurn();
@@ -165,14 +163,12 @@ function startNextTurn() {
 function onChatMessage(message) {
     handle = players['/#'+message.playerID]['handle'];
     message = {text:message.text, handle:handle}
-    console.log(message);
     io.sockets.emit('recieveMessage', message);
 }
 
 function onAskQuestion(question) {
     player = players['/#'+question.playerID];
     currentQuestion = {text:question.text, handle:player.handle}
-    console.log(question);
     player['session'].emit('myQuestion', currentQuestion);
     player['session'].broadcast.emit('myOpponentsQuestion', currentQuestion);
 }
@@ -187,7 +183,6 @@ function onReplyWithAnswer(answer) {
 function onGuess(guess) {
     player = players['/#'+guess.playerID];
     opponent = Helpers.getOpponent(players, guess.playerID);
-    console.log(opponent); //debug
     if (guess.handle == opponent['choice']) {
         playerWins(player, opponent);
     } else {

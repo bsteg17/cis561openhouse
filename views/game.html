@@ -1,5 +1,6 @@
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <head>
 
 <div id="choose-view" class="view" style="display:none;">
     <div id="choices"></div>
@@ -38,6 +39,7 @@
     </div>
     <div class="row stuck no-pad">
         <div class="col-md-10 col-sm-10 no-padding">
+            <div class="chat">
             <div class="my-chat-messages"></div>
             <input id="my-chat-input" type="text" />
             <button id="question-submit" class="btn btn-primary">Ask</button>
@@ -46,6 +48,7 @@
                 Guess if the winning card is<br/>
                 <span class="handle" ></span>?<br/>
                 <button id="guess-submit" class="btn btn-primary">Guess</button>
+            </div>
             </div>
         </div>
         <div class="col-md-2 col-sm-2 no-padding">
@@ -69,6 +72,7 @@
 </div>
 
 
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.1/css/font-awesome.css">
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -82,4 +86,5 @@
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 <script src="/js/auto-resize.js"></script>
 <!--<script src="/js/prefixfree.min.js"></script>-->
+
 <script src="/js/client.js"></script>

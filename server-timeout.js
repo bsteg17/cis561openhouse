@@ -91,7 +91,8 @@ function ifNotFollowingTooMany(handle, callback) {
               console.log("sorry you're following too many people. you are too popular/desparate to play this game.");
           }
       } else {
-          console.log(error + " ifNotFollowingTooMany");
+          throw error
+          console.log("line ~95");
       }
     });
 }

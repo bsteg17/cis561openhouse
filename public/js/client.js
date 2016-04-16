@@ -1,7 +1,8 @@
+
 var socket;
 var profiles;
 var me;
-var gameViewLoaded = false
+var gameViewLoaded = false;
 var chosenProfile;
 
 var ROW_WIDTH = 6,
@@ -13,7 +14,6 @@ $(document).ready(function() {
     
     socket = io();
     socket.on('connect', function() {
-        console.log("connected");
         showView('#handle-input-view');
         
         //when enter button is push on handle select screen
@@ -27,7 +27,6 @@ $(document).ready(function() {
             }
         });
         $('.handle-input input').on('input', function() {
-            console.log($(this).val());
             if($(this).val().length > 0) {
                 $('.trailing-question-mark').hide();
                 $('.twitter-logo').hide();
@@ -43,8 +42,10 @@ $(document).ready(function() {
         });
         $('#guess-submit').on('click', onGuessSubmit);
         $(document).on('click', '.answer', function() {
-            console.log($(this).val())
             replyWithAnswer($(this).val());
+        });
+        $(document).on('mouseover', '.imageWrap', function() {
+            changeBackgroundColor(this);
         });
         socket.on('askForChoice', onAskForChoice);
         socket.on('yourTurn', onMyTurn);
@@ -86,15 +87,15 @@ function onAskForChoice(profs) {
     // "in front is important.) Like I said before, first one to guess the other's chosen"+
     // "profile wins the game.");
     profiles = profs;
-    console.log(profs);
     showView('#choose-view', generateChooseView);
 }
 
 function generateChooseView() {
    generateGrid('#choices');
    
-   $('.profile-choice').on('click', function() {
+   $('.profile-choice').on('click', function(e) {
        onSelectChoice($(this));
+       e.preventDefault();
    });
 }
 
@@ -107,7 +108,6 @@ function onSelectChoice(choice) {
 }
 
 function onMyTurn() {
-    console.log('my turn'); //debug
     if (!gameViewLoaded) {
         generateMyFixedGameView();
     }
@@ -119,7 +119,6 @@ function onMyTurn() {
 
 function onOpponentsTurn() {
     $('#handle-to-guess').hide();
-    console.log('my opp turn'); //debug
     if (!gameViewLoaded) {
         generateMyFixedGameView();
     }
@@ -162,10 +161,22 @@ function generateGrid(id) {
    });
 
    $(id).append( profs.join('') );
+   generateColoredBackgrounds();
 }
 
 function generateChat() {
     postMessage({text:'Welcome to Tweet-Guess', handle:'TweetGuess'});
+}
+
+function generateColoredBackgrounds() {
+    images = $('.imageWrap');
+    images.each(function(i, image) {
+        $(image).attr('background-color', randomHex());
+    });
+}
+
+function changeBackgroundColor(image) {
+    $('body').css('background-color', $(image).attr('background-color'));
 }
 
 function generateChosenPic() {
@@ -181,7 +192,6 @@ function onClickProfilePic(pic) {
     if(pic.parent().attr('class').indexOf('hvr-float') > -1) {
         pic.parent().removeClass('hvr-float');
         pic.parent().addClass('eliminated');
-        console.log(pic);
     } else {
         pic.parent().removeClass('eliminated');
         pic.parent().addClass('hvr-float');
@@ -224,13 +234,11 @@ function onAskQuestion() {
 }
 
 function onMyQuestion(question) {
-    console.log('entered postmyquestion'); //debug
     messageHistory = $('.my-chat-messages');
     messageHistory.append('<li class="question"><strong>'+question.handle+'</strong>  -  '+question.text+'</li>');
 }
 
 function onOpponentsQuestion(question) {
-    console.log('entered postopponentsquestion'); //debug
     messageHistory = $('.my-chat-messages');
     messageHistory.append('<div class="question opponent-chat"><strong>'+question.handle+'</strong>  -  '+question.text+'</li>');
     messageHistory.append('<div class="answer-wrapper"><button value="yes" class="answer" id="yes">YES</button><button value="no" class="answer" id="no">NO</button></li>');
@@ -249,7 +257,6 @@ function onAddQuestionToLog(question) {
 }
 
 function onGuessSubmit() {
-    console.log('onguesssubmit');
     handle = $('.handle').text().substr(1);
     socket.emit('guess', {playerID:socket.id, handle:handle});
 }
@@ -303,4 +310,12 @@ function randomHex() {
         hex += hex_digits[Math.floor(Math.random() * 16) - 1];
     }
     return '#'+hex;
+}
+
+getObjectValues = function(object) {
+    values = [];
+    for (var key in object) {
+        values.push(object[key]);
+    }
+    return values;
 }
