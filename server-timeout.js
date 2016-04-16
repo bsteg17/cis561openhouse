@@ -14,6 +14,8 @@ io = require('socket.io')(server);
 app.use(express.static('public'));
 app.use(bodyParser());
 
+round = 0;//debug
+
 var PORT = 8080;
 
 var twitter = new Twitter({
@@ -61,15 +63,22 @@ function onSubmitHandle(handle) {
 }
 
 function getTwitterProfile(playerID, callback) {
-    ifNotFollowingTooMany(players[playerID]["handle"], function() {
-        getFollowing(players[playerID]["handle"], -1, [], function(err, following) {
-            if (err) {throw err;}
+    // ifNotFollowingTooMany(players[playerID]["handle"], function() {
+    //     getFollowing(players[playerID]["handle"], -1, [], function(err, following) {
+            // if (err) {console.log(err);
+            //     console.log("getTwitterProfile");}
+            if (round == 0) {
+                following = JSON.parse(fs.readFileSync('players1.json'));
+                round++;
+            } else {
+                following = JSON.parse(fs.readFileSync('players2.json'));
+            } //debug
             players[playerID]["twitterProfile"] = {following:following};
             if (Helpers.allPlayersHaveAttr(players, 'twitterProfile')) {
                 callback();
             }
-        });
-    });
+    //     });
+    // });
 }
 
 function ifNotFollowingTooMany(handle, callback) {
@@ -82,7 +91,7 @@ function ifNotFollowingTooMany(handle, callback) {
               console.log("sorry you're following too many people. you are too popular/desparate to play this game.");
           }
       } else {
-          throw error;
+          console.log(error + " ifNotFollowingTooMany");
       }
     });
 }

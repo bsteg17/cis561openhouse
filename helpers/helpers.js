@@ -1,12 +1,17 @@
 module.exports.intersectSafe = function(a, b)
 {
+    // sorts arrays of 'following' by handle
+  module.exports.sortFollowingByHandle(a);
+  module.exports.sortFollowingByHandle(b);
+  
+  // uses handle to find mutual 'following'
   var ai = 0, bi = 0;
   var result = [];
 
   while( ai < a.length && bi < b.length )
   {
-     if      (a[ai] < b[bi] ){ ai++; }
-     else if (a[ai] > b[bi] ){ bi++; }
+     if      (a[ai]['screen_name'] < b[bi]['screen_name'] ){ ai++; }
+     else if (a[ai]['screen_name'] > b[bi]['screen_name'] ){ bi++; }
      else /* they're equal */
      {
        result.push(a[ai]);
@@ -16,6 +21,14 @@ module.exports.intersectSafe = function(a, b)
   }
 
   return result;
+}
+
+module.exports.sortFollowingByHandle = function(following) {
+    following.sort(function(i, j) {
+        var handleA = i['screen_name'].toUpperCase();
+        var handleB = j['screen_name'].toUpperCase();
+        return (handleA < handleB) ? -1 : (handleA > handleB) ? 1 : 0;
+    });
 }
 
 module.exports.getObjectValues = function(object) {

@@ -1,7 +1,8 @@
 var socket;
 var profiles;
 var me;
-var gameViewLoaded = false;
+var gameViewLoaded = false
+var chosenProfile;
 
 var ROW_WIDTH = 6,
     IMAGE_SIDE_LENGTH = document.documentElement.clientWidth / 6.075;
@@ -73,17 +74,17 @@ function showView(id, callback) {
 }
 
 function onAskForChoice(profs) {
-    alert("So first you have to choose a profile picture. This is the pic for the"+
-    "account that your opponent must guess in order to win. Once you pick, the player"+
-    "who is randomly assigned first turn will be able to ask the other player a question."+
-    "All answers should be truthful, we'll be able to see the questions and answers"+
-    "after the game is over and we know who the other player's card was. So anyway players"+
-    "take turns asking yes/no questions to try and deduce the other player's profile "+
-    "(you can click on the pictures to help you keep track of who cannot be the other"+
-    "player's card.) When you're ready to guess at a specific profile, type the twitter"+
-    "handle of that profile into the chat box and press the guess button (putting the '@'"+
-    "in front is important.) Like I said before, first one to guess the other's chosen"+
-    "profile wins the game.");
+    // alert("So first you have to choose a profile picture. This is the pic for the"+
+    // "account that your opponent must guess in order to win. Once you pick, the player"+
+    // "who is randomly assigned first turn will be able to ask the other player a question."+
+    // "All answers should be truthful, we'll be able to see the questions and answers"+
+    // "after the game is over and we know who the other player's card was. So anyway players"+
+    // "take turns asking yes/no questions to try and deduce the other player's profile "+
+    // "(you can click on the pictures to help you keep track of who cannot be the other"+
+    // "player's card.) When you're ready to guess at a specific profile, type the twitter"+
+    // "handle of that profile into the chat box and press the guess button (putting the '@'"+
+    // "in front is important.) Like I said before, first one to guess the other's chosen"+
+    // "profile wins the game.");
     profiles = profs;
     console.log(profs);
     showView('#choose-view', generateChooseView);
@@ -99,6 +100,7 @@ function generateChooseView() {
 
 
 function onSelectChoice(choice) {
+    chosenProfile = choice;
     screen_name = choice.attr('name');
     playerID = socket.id;
     socket.emit('choice', {screen_name: screen_name, playerID: playerID});
@@ -137,6 +139,7 @@ function generateMyFixedGameView() {
     showView('#game-view', function() {
         generateGrid('#my-grid');
         generateChat();
+        generateChosenPic();
         gameViewLoaded = true;
         $(document).on('click', '.profile-choice', function(e) {
             onClickProfilePic($(this));
@@ -151,7 +154,7 @@ function generateGrid(id) {
 
    $.each(profiles, function(i, item) {
        profile = '<span class="imageWrap hvr-float"><a class="profile-choice" name="'+item.screen_name+'" href="#">';
-       profile += '<img src="'+item.profile_image_url.replace('_normal.png','.png')+'" height="'+IMAGE_SIDE_LENGTH+'" width="'+IMAGE_SIDE_LENGTH+'" />';
+       profile += '<img src="'+item.profile_image_url.replace('_normal.png','.png')+'" height="'+IMAGE_SIDE_LENGTH+'" width="'+IMAGE_SIDE_LENGTH+'" name="'+item.screen_name+'" />';
        profile += '<span class="imageCaption hvr-bounce-in-right">@'+item.screen_name+'</span>';
        profile += '</a></span>';
        if ((i+1) % ROW_WIDTH == 0 || i == 23) { profile += '<br />'; } //at end of row put 
@@ -163,6 +166,15 @@ function generateGrid(id) {
 
 function generateChat() {
     postMessage({text:'Welcome to Tweet-Guess', handle:'TweetGuess'});
+}
+
+function generateChosenPic() {
+    profile = '<span class="imageWrap hvr-float chosen-image">';
+       profile += '<img src="'+chosenProfile.children('img').attr('src')+'" />';
+       profile += '<span class="imageCaption hvr-bounce-in-right">@'+chosenProfile.attr('name')+'</span>';
+       profile += '<br /><br /><br /><br /><br /></span>';
+       profile += '</a></span>';
+    $('.chosen-image').html(profile);
 }
 
 function onClickProfilePic(pic) {
@@ -200,7 +212,7 @@ function onRecieveMessage(message) {
 }
 
 function postMessage(message) {
-    messageHistory = $('#my-chat-messages');
+    messageHistory = $('.my-chat-messages');
     messageHistory.append('<li><strong>'+message.handle+'</strong>  -  '+message.text+'</li>');
 }
 
@@ -213,15 +225,15 @@ function onAskQuestion() {
 
 function onMyQuestion(question) {
     console.log('entered postmyquestion'); //debug
-    messageHistory = $('#my-chat-messages');
+    messageHistory = $('.my-chat-messages');
     messageHistory.append('<li class="question"><strong>'+question.handle+'</strong>  -  '+question.text+'</li>');
 }
 
 function onOpponentsQuestion(question) {
     console.log('entered postopponentsquestion'); //debug
-    messageHistory = $('#my-chat-messages');
-    messageHistory.append('<li class="question"><strong>'+question.handle+'</strong>  -  '+question.text+'</li>');
-    messageHistory.append('<li class="answer-wrapper"><button value="yes" class="answer" id="yes">YES</button><button value="no" class="answer" id="no">NO</button></li>');
+    messageHistory = $('.my-chat-messages');
+    messageHistory.append('<div class="question opponent-chat"><strong>'+question.handle+'</strong>  -  '+question.text+'</li>');
+    messageHistory.append('<div class="answer-wrapper"><button value="yes" class="answer" id="yes">YES</button><button value="no" class="answer" id="no">NO</button></li>');
 }
 
 function replyWithAnswer(answer) {
