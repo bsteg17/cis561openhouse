@@ -38,17 +38,22 @@
         </div>
     </div>
     <div class="row stuck no-pad">
-        <div class="col-md-10 col-sm-10 no-padding">
+        <div class="col-md-6 col-sm-6 no-padding">
             <div class="chat">
             <div class="my-chat-messages"></div>
             <input id="my-chat-input" type="text" />
             <button id="question-submit" class="btn btn-primary">Ask</button>
             <button id="chat-submit" class="btn btn-secondary">Send</button>
-            <div id="handle-to-guess" style="display:none;">
-                Guess if the winning card is<br/>
-                <span class="handle" ></span>?<br/>
+            <span id="handle-to-guess" style="display:none;">
+                <span class="handle" style="display:none;" ></span>
                 <button id="guess-submit" class="btn btn-primary">Guess</button>
+            </span>
             </div>
+        </div>
+        <div class="col-md-4 col-sm-4 no-padding">
+            <div class="question-history-wrapper">
+            <ul class="question-history">
+            </ul>
             </div>
         </div>
         <div class="col-md-2 col-sm-2 no-padding">

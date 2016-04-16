@@ -193,3 +193,8 @@ body, html {
 .chat {
     text-align:center;
 }
+
+.question-history-wrapper {
+    overflow-y: scroll;
+    height: 100%;
+}

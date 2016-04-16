@@ -250,10 +250,10 @@ function replyWithAnswer(answer) {
 }
 
 function onAddQuestionToLog(question) {
-    $('#question-history').append('<li class="logged-handle">'+question.handle+'</li>');
-    $('#question-history').append('<li class="logged-question">'+question.text+'</li>');
-    $('#question-history').append('<li class="logged-answer">&nbsp;&nbsp;'+question.answer+'</li>');
-    $('#question-history').append('<li>---------------------------------</li>');
+    $('.question-history').append('<li class="logged-handle">'+question.handle+'</li>');
+    $('.question-history').append('<li class="logged-question">'+question.text+'</li>');
+    $('.question-history').append('<li class="logged-answer">&nbsp;&nbsp;'+question.answer+'</li>');
+    $('.question-history').append('<li>---------------------------------</li>');
 }
 
 function onGuessSubmit() {

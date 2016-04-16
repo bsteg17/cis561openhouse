@@ -196,12 +196,13 @@ function onReplyWithAnswer(answer) {
 
 function onGuess(guess) {
     player = players['/#'+guess.playerID];
+    console.log(player);
     opponent = Helpers.getOpponent(players, guess.playerID);
     console.log(opponent); //debug
     if (guess.handle == opponent['choice']) {
         playerWins(player, opponent);
     } else {
-        io.sockets.emit('addQuestionToLog', {text:'@'+guess.handle+'?', answer:'No'});
+        io.sockets.emit('addQuestionToLog', {handle:player.handle, text:'@'+guess.handle+'?', answer:'No'});
         startNextTurn();
     }
 }

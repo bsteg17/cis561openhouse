@@ -186,7 +186,7 @@ function onGuess(guess) {
     if (guess.handle == opponent['choice']) {
         playerWins(player, opponent);
     } else {
-        io.sockets.emit('addQuestionToLog', {text:'@'+guess.handle+'?', answer:'No'});
+        io.sockets.emit('addQuestionToLog', {handle:player.handle, text:'@'+guess.handle+'?', answer:'No'});
         startNextTurn();
     }
 }
