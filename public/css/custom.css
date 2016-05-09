@@ -101,6 +101,7 @@ body, html {
   line-height:normal;
   visibility: hidden;
   opacity: 0;
+  font-size:2em;
 }
 
 .imageWrap:hover .imageCaption {
@@ -178,6 +179,7 @@ body, html {
     overflow-y:scroll;
     color: #fff;
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    font-size:2em;
 }
 
 .row.no-pad {
@@ -197,4 +199,27 @@ body, html {
 .question-history-wrapper {
     overflow-y: scroll;
     height: 100%;
+    overflow-x:hidden;
+}
+
+.question-history {
+    font-size:2em;
+    background-color:aqua;
+    padding:0;
+    width:100%;
+    word-wrap:break-word;
+}
+
+.question-history-entry {
+    width:100%;
+    border-radius:.5em;
+}
+
+.question-history .logged-answer {
+    background-color:red;
+}
+
+.question-history .logged-question {
+    background-color:yellow;
+    width:100%;
 }
