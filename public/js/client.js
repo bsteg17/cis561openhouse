@@ -1,7 +1,7 @@
 
 var socket;
 var profiles;
-var me;
+var me = {};
 var gameViewLoaded = false;
 var chosenProfile;
 
@@ -63,6 +63,8 @@ $(document).ready(function() {
 
 function onSubmitHandle(handle) {
     socket.emit('submitHandle', {playerID:socket.id, handle:handle});
+    me.socket = socket;
+    me.handle = handle;
     showView('#waiting-view', gradualShowWaiting());
 }
 
@@ -223,7 +225,13 @@ function onRecieveMessage(message) {
 
 function postMessage(message) {
     messageHistory = $('.my-chat-messages');
-    messageHistory.append('<li><strong>'+message.handle+'</strong>  -  '+message.text+'</li>');
+    if (message.handle != me.handle) {
+        className = "opponent-chat";
+    }
+    else {
+        className = "my-chat";
+    }
+    messageHistory.append('<div class="'+className+'"><strong>'+message.handle+'</strong>  -  '+message.text+'</div>');
 }
 
 function onAskQuestion() {
@@ -235,13 +243,13 @@ function onAskQuestion() {
 
 function onMyQuestion(question) {
     messageHistory = $('.my-chat-messages');
-    messageHistory.append('<li class="question"><strong>'+question.handle+'</strong>  -  '+question.text+'</li>');
+    messageHistory.append('<div class="question my-question"><strong>'+question.handle+'</strong>  -  '+question.text+'</div>');
 }
 
 function onOpponentsQuestion(question) {
     messageHistory = $('.my-chat-messages');
-    messageHistory.append('<div class="question opponent-chat"><strong>'+question.handle+'</strong>  -  '+question.text+'</li>');
-    messageHistory.append('<div class="answer-wrapper"><button value="yes" class="answer" id="yes">YES</button><button value="no" class="answer" id="no">NO</button></li>');
+    messageHistory.append('<div class="question opponent-question"><strong>'+question.handle+'</strong>  -  '+question.text+'</li>');
+    messageHistory.append('<div class="answer-wrapper"><button value="yes" class="answer yes" id="yes">YES</button><button value="no" class="answer no" id="no">NO</button></li>');
 }
 
 function replyWithAnswer(answer) {

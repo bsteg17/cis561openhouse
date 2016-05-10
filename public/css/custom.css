@@ -204,7 +204,7 @@ body, html {
 
 .question-history {
     font-size:2em;
-    background-color:aqua;
+    background-color:lightgray;
     padding:0;
     width:100%;
     word-wrap:break-word;
@@ -212,14 +212,79 @@ body, html {
 
 .question-history-entry {
     width:100%;
-    border-radius:.5em;
+    border-radius:.1em;
+    border-style:solid;
+    border-width:0;
+    border-color:whitesmoke;
 }
 
 .question-history .logged-answer {
-    background-color:red;
+    background-color:gray;
 }
 
 .question-history .logged-question {
-    background-color:yellow;
+    background-color:darkgray;
     width:100%;
+}
+
+.opponent-chat {
+  background-color:aqua;
+  margin: .5em 1em .5em 0;
+  border-radius:2em;
+}
+
+.my-chat {
+  background-color:rebeccapurple;
+  margin:.5em 0 .5em 1em;
+  border-radius:2em;
+}
+
+.opponent-question {
+  background-color:aqua;
+  margin: .5em 1em .5em 0;
+  border-radius:2em;
+  border-style: solid;
+  border-width: .3em;
+  border-color:white;
+}
+
+.my-question {
+  background-color:rebeccapurple;
+  margin:.5em 0 .5em 1em;
+  border-radius:2em;
+  border-style: solid;
+  border-width: .3em;
+  border-color:white;
+}
+
+.yes {
+    background-color: aqua; /* Green */
+    border: none;
+    color: white;
+    padding: .5em .5em;
+    margin: 0 0 0 .5em;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1em;
+    border-radius:.75em;
+    border-style: solid;
+  border-width: .3em;
+  border-color:white;
+}
+
+.no {
+    background-color: rebeccapurple; /* Green */
+    border: none;
+    color: white;
+    padding: .5em .5em;
+    margin: 0 0 0 .5em;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1em;
+    border-radius:.75em;
+    border-style: solid;
+  border-width: .3em;
+  border-color:white;
 }
