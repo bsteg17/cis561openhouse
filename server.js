@@ -61,7 +61,7 @@ function onSubmitHandle(handle) {
 }
 
 function getTwitterProfile(playerID, callback) {
-    ifNotFollowingTooMany(players[playerID]["handle"], function() {
+    checkNotFollowingTooMany(players[playerID]["handle"], function() {
         getFollowing(players[playerID]["handle"], -1, [], function(err, following) {
             if (err) {throw err;}
             players[playerID]["twitterProfile"] = {following:following};
@@ -72,7 +72,7 @@ function getTwitterProfile(playerID, callback) {
     });
 }
 
-function ifNotFollowingTooMany(handle, callback) {
+function checkNotFollowingTooMany(handle, callback) {
     params = {screen_name:handle};
     twitter.get('users/show', params, function(error, user, response){
       if (!error) {
