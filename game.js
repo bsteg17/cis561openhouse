@@ -23,7 +23,7 @@ function Game(io) {
 Game.prototype.addPlayer = function(handle) {
     cursor = -1;
     following = [];
-    ifNotFollowingTooMany(handle, function() {
+    checkNotFollowingTooMany(handle, function() {
         getFollowing(handle, cursor, following, function(error, following) {
             if (error) {console.log(error);}
             player = new Player(handle, following);
@@ -103,7 +103,7 @@ function getFollowing(handle, cursor, following, callback) {
     });
 }
 
-function ifNotFollowingTooMany(handle, callback) {
+function checkNotFollowingTooMany(handle, callback) {
     params = {screen_name:handle};
     twitter.get('users/show', params, function(error, user, response){
       if (!error) {
@@ -118,8 +118,7 @@ function ifNotFollowingTooMany(handle, callback) {
     });
 }
 
-function intersectSafe(a, b)
-{
+function intersectSafe(a, b) {
   var ai = 0, bi = 0;
   var result = [];
 
