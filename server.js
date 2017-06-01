@@ -79,9 +79,10 @@ function checkNotFollowingTooMany(handle, callback) {
           if (user.friends_count < 1000) {
               callback();
           } else {
-              console.log("sorry you're following too many people. you are too popular/desparate to play this game.");
+              console.log("sorry, you're following too many people.");
           }
       } else {
+          console.log(error.message);
           throw error;
       }
     });
