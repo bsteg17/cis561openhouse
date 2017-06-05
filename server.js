@@ -61,15 +61,12 @@ function onSubmitHandle(handle) {
 }
 
 function getTwitterProfile(playerID, callback) {
-    ifNotFollowingTooMany(players[playerID]["handle"], function() {
-        getFollowing(players[playerID]["handle"], -1, [], function(err, following) {
-            if (err) {throw err;}
-            players[playerID]["twitterProfile"] = {following:following};
-            if (Helpers.allPlayersHaveAttr(players, 'twitterProfile')) {
-                callback();
-            }
-        });
-    });
+    following = JSON.parse(fs.readFileSync('players.json'));
+    players[playerID]["twitterProfile"] = {following:following};
+    if (Helpers.allPlayersHaveAttr(players, 'twitterProfile')) {
+        callback();
+    }
+
 }
 
 function ifNotFollowingTooMany(handle, callback) {
