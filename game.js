@@ -2,16 +2,18 @@
 var request = require('request');
 var Player = require('./player.js');
 Twitter = require('twitter');
-secrets = require('./secrets.js');
+//secrets = require('./secrets.js');
 var fs = require('fs');
 var ERROR = require('./error.js');
 
+/*
 var twitter = new Twitter({
   consumer_key: secrets.consumer_key,
   consumer_secret: secrets.consumer_secret,
   access_token_key: secrets.access_token_key,
   access_token_secret: secrets.access_token_secret
 });
+*/
 
 function Game(io) {
     this.players = {};
