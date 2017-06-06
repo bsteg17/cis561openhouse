@@ -61,7 +61,7 @@ function onSubmitHandle(handle) {
 }
 
 function getTwitterProfile(playerID, callback) {
-    following = JSON.parse(fs.readFileSync('players.json'));
+    following = JSON.parse(fs.readFileSync('players_ezraklein.json'));
     players[playerID]["twitterProfile"] = {following:following};
     if (Helpers.allPlayersHaveAttr(players, 'twitterProfile')) {
         callback();
