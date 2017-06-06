@@ -1,15 +1,15 @@
-## How to Start
-# with a sample set of Twitter accounts (no auth keys necessary)
+# How to Start
+## with a sample set of Twitter accounts (no auth keys necessary)
 1. Clone the repo
    `git clone https://github.com/bsteg17/cis561openhouse.git`
 2. Enter the repo and start the server
    `cd cis561openhouse`
    `node server.js`
-3. Navigate to 'localhost:8080/game' in two new browser tabs
-4. In each tab, select a profile picture. Your opponent will have to determine which profile you've chosen in order to win the game.
+3. Navigate to 'localhost:8080/game' in two new browser tabs. Each tab represents the browser window of a 'player.'
+4. Enter some random gobbledeegook for the handle prompts in the tabs (\'@asdfasdf\') and press enter
+5. Some profile pictures should appear. In each tab, select a profile picture. Your opponent will have to determine which profile you've chosen in order to win the game.
 
-## How to Start
-# with a sample set of Twitter accounts (no auth keys necessary)
+## with real Twitter accounts (auth keys necessary)
 1. Clone the \'refactor\' branch of the repo 
    `git clone -b refactor https://github.com/bsteg17/cis561openhouse.git`
 2. Create a \'secrets.js\' file. 
@@ -24,10 +24,8 @@
 3. Start the server
    `node server.js`
 4. Navigate to `localhost:8080/game` in two new browser tabs
-5. In each tab, select a profile picture. Your opponent will have to determine which profile you've chosen in order to win the game.
-
-## How to Start
-# with a sample set of Twitter accounts (no auth keys necessary)
+5. Enter two different twitter accounts in each tab (must be public) to generate the game with and press enter. These two accounts need to be followiing at least 24 of the same accounts to play.
+6. In each tab, select a profile picture. Your opponent will have to determine which profile you've chosen in order to win the game.
 
 # How to Play
 1. The profile picture should now display in the bottom right of each tab's viewport.
